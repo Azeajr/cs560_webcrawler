@@ -65,3 +65,11 @@
    ```sql
    sqlite> select * from books;
    ```
+
+## Project Initialized with
+```bash
+scrapy startproject zillow_crawler
+cd zillow_crawler/
+scrapy genspider zillow_houses zillow.com
+scrapy genspider books_toscrape books.toscrape.com
+```
