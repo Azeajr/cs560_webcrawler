@@ -1,10 +1,13 @@
 # cs560_webcrawler
 
 ## Prerequisites
-
 - pyenv
 - Python 3.11
 - poetry
+## Optional Prerequisites
+- Homebrew
+- sqlitebrowser
+  - GUI for viewing sqlite databases
 
 ## Setup
 
@@ -39,5 +42,26 @@
    ```
 7. Run the program
    ```bash
-   python main.py
+   scrapy runspider zillow_crawler/spiders/books_toscrape.py
+   ```
+
+8. View the sqlite database
+   ```bash
+   sqlitebrowser zillow_crawler.db
+   ```
+   or
+   ```bash
+   sqlite3 zillow_crawler.db
+   ```
+   To list all tables(Omit `sqlite>` when running in sqlite3 shell)
+   ```sql
+   sqlite> .tables 
+   ```
+   To view the schema of a table:
+   ```sql
+   sqlite> .schema <table_name>
+   ```
+   To view the contents of a table:
+   ```sql
+   sqlite> select * from books;
    ```
