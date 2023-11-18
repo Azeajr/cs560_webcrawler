@@ -20,12 +20,12 @@ class BooksToscrapePipeline:
         self.Session = sessionmaker(bind=engine)
 
     def process_item(self, books, spider):
-        log.info("Pipeline", books=books)
         session = self.Session()
         if spider.name == "books_toscrape" and books:
             for book_name, product_price in zip(
                 books["book_name"], books["product_price"]
             ):
+                log.info("Book found", book_name=book_name, product_price=product_price)
                 book = Book(book_name=book_name, product_price=product_price)
                 session.add(book)
             session.commit()

@@ -41,6 +41,11 @@
    poetry shell
    ```
 7. Run the program
+   - Current Method (Uses rich to display results)
+   ```bash
+   python main.py
+   ```
+   - Legacy Method (Uses scrapy to crawl but logging is not formatted)
    ```bash
    scrapy runspider zillow_crawler/spiders/books_toscrape.py
    ```
