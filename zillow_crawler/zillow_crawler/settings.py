@@ -44,7 +44,7 @@ DEFAULT_REQUEST_HEADERS = {
     "Accept-Language": "en",  # This is the default value
     # "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
     # "Accept-Language": "en-US,en;q=0.9",
-    "Accept-Encoding": "gzip, deflate, br",
+    "Accept-Encoding": "UTF-8",  # This is the default value
     "Referer": "https://www.google.com/",
     "DNT": "1",  # Do Not Track Request Header
 }
@@ -100,3 +100,6 @@ ITEM_PIPELINES = {
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
+
+# Configure logging
+LOG_ENABLED = False
