@@ -13,6 +13,8 @@ libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-d
 echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
 export PYENV_ROOT="$HOME/.pyenv"
 curl https://pyenv.run | bash
+
+
 # Setup Python Version Manager to bashrc
 echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
 echo 'eval "$(pyenv init -)"' >> ~/.bashrc
@@ -23,6 +25,7 @@ command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 # Install Poetry
 curl -sSL https://install.python-poetry.org | python3 -
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+
 
 # Install Python
 eval "$(pyenv init -)"

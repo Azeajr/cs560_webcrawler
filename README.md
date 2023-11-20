@@ -2,7 +2,7 @@
 
 ## Prerequisites
 - pyenv
-- Python 3.11
+- Python 3.11.6
 - poetry
 ## Optional Prerequisites
 - Homebrew
@@ -10,37 +10,24 @@
   - GUI for viewing sqlite databases
 
 ## Setup
+1. Install Python 3.11
+   ```bash
+   pyenv install 3.11.6
+   ```
+2. Set Python 3.11 as the global version
+   ```bash
+   pyenv global 3.11.6
 
-1. Install pyenv
-   ```bash
-   brew install pyenv
-   ```
-   or
-   ```bash
-   curl https://pyenv.run | bash
-   ```
-2. Install Python 3.11
-   ```bash
-   pyenv install 3.11
-   ```
-3. Set Python 3.11 as the global version
-   ```bash
-   pyenv global 3.11
-   ```
-4. Install poetry
-   ```bash
-   curl -sSL https://install.python-poetry.org | python3 -
-   ```
-5. Install dependencies
+3. Install dependencies
    ```bash
    cd cs560_webcrawler
    poetry install
    ```
-6. Activate the virtual environment
+4. Activate the virtual environment
    ```bash
    poetry shell
    ```
-7. Run the program
+5. Run the program
    - Current Method (Uses rich to display results)
    ```bash
    python main.py
@@ -50,7 +37,7 @@
    scrapy runspider zillow_crawler/spiders/books_toscrape.py
    ```
 
-8. View the sqlite database
+6. View the sqlite database
    ```bash
    sqlitebrowser zillow_crawler.db
    ```
@@ -77,4 +64,10 @@ scrapy startproject zillow_crawler
 cd zillow_crawler/
 scrapy genspider zillow_houses zillow.com
 scrapy genspider books_toscrape books.toscrape.com
+```
+## Setup Dependencies
+Setup script will install and setup pyenv and poetry if not already installed.
+Script is meant to be run in a linux environment, e.g. WSL2 running Ubuntu 22.04
+```bash
+sudo setup.sh
 ```
