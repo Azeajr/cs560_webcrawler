@@ -2,7 +2,7 @@
 
 ## Prerequisites
 - pyenv
-- Python 3.11.6
+- Python 3.11
 - poetry
 ## Optional Prerequisites
 - Homebrew
@@ -12,11 +12,11 @@
 ## Setup
 1. Install Python 3.11
    ```bash
-   pyenv install 3.11.6
+   pyenv install 3.11
    ```
 2. Set Python 3.11 as the global version
    ```bash
-   pyenv global 3.11.6
+   pyenv global 3.11
 
 3. Install dependencies
    ```bash
@@ -66,8 +66,11 @@ scrapy genspider zillow_houses zillow.com
 scrapy genspider books_toscrape books.toscrape.com
 ```
 ## Setup Dependencies
-Setup script will install and setup pyenv and poetry if not already installed.
-Script is meant to be run in a linux environment, e.g. WSL2 running Ubuntu 22.04
+- Setup script will install and setup pyenv and poetry if not already installed.
+- Script is meant to be run in a linux environment, e.g. WSL2 running Ubuntu 22.04
+- You will be asked for your sudo password to update, upgrade, and install dependencies
 ```bash
-sudo setup.sh
+cd cs560_webcrawler
+chmod +x setup.sh
+./setup.sh
 ```
