@@ -5,9 +5,15 @@
 - Python 3.11
 - poetry
 ## Optional Prerequisites
-- Homebrew
-- sqlitebrowser
-  - GUI for viewing sqlite databases
+- sqlite3 or sqlitebrowser
+  - sqlite3 is a command line interface for sqlite databases
+    - ```bash
+      sudo apt install sqlite3
+      ```
+  - sqlitebrowser is a GUI for viewing sqlite databases
+    - ```bash
+      sudo apt install sqlitebrowser
+      ```
 
 ## Setup
 1. Install Python 3.11
@@ -30,6 +36,7 @@
 5. Run the program
    - Current Method (Uses rich to display results)
    ```bash
+   cd zillow_crawler
    python main.py
    ```
    - Legacy Method (Uses scrapy to crawl but logging is not formatted)
