@@ -1,0 +1,3 @@
+{
+  "conventionalCommits.scopes": ["webscraper", "rich_cli", "setup_script"]
+}
