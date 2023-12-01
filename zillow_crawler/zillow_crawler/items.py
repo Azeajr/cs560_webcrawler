@@ -6,14 +6,19 @@
 import scrapy
 
 
-class ZillowCrawlerItem(scrapy.Item):
+class HouseItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
     address = scrapy.Field()
     price = scrapy.Field()
+    sqft = scrapy.Field()
+    bedrooms = scrapy.Field()
+    bathrooms = scrapy.Field()
+    house_hash = scrapy.Field()
 
 
-class BooksToscrapeItem(scrapy.Item):
-    # define the fields for your item here like:
-    book_name = scrapy.Field()
-    product_price = scrapy.Field()
+class PageItem(scrapy.Item):
+    page_url = scrapy.Field()
+    page_title = scrapy.Field()
+    page_content = scrapy.Field()
+    page_hash = scrapy.Field()
