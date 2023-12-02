@@ -61,8 +61,8 @@ def main():
         cities = [city for city, *_ in results]
         prices = [price for *_, price in results]
 
-        # plt.bar(cities, prices, width=1)
-        # plt.show()
+        plt.bar(cities, prices, width=1)
+        plt.show()
 
         renderables = [
             Panel(
@@ -74,9 +74,9 @@ def main():
         ]
         live.update(Panel.fit(Columns(renderables, equal=True), title = "Houses Located"))
 
-        # cons.print(f"\nTotal crawl time: {total_crawl_time:0.2f}")
-        # cons.print(f"Total houses escraped: {total_houses}")
-        # cons.print(f"Total pages scraped: {total_pages}")
+        cons.print(f"\nTotal crawl time: {time.strftime('%H:%M:%S', time.gmtime(total_crawl_time))}")        
+        cons.print(f"Total houses escraped: {total_houses}")
+        cons.print(f"Total pages scraped: {total_pages}")
         
         session.close()
 
