@@ -16,6 +16,7 @@ from zillow_crawler.models import ZillowListing, ZillowPage, engine
 from zillow_crawler.spiders.zillow_houses import ZillowHousesSpider
 
 import plotext as plt
+import time
 
 collected_stats = None
 
@@ -26,8 +27,13 @@ def main():
         settings=get_project_settings(),
     )
     clawler = process.create_crawler(ZillowHousesSpider)
+    start_timer = time.time()   #used to time crawling time
+    total_houses = 0            #total houses scraped
+    total_pages = 0             #total pages scraped
+
     process.crawl(clawler)
     process.start()
+    total_crawl_time = time.time() - start_timer
 
     stats = clawler.stats.get_stats()
     console.print(stats)
@@ -40,12 +46,11 @@ def main():
 
         for listing in listings:
             cons.print(listing.address)
+        
+        
+        total_pages = len(pages)
 
-        average_price = (
-            session.query(ZillowListing).with_entities(ZillowListing.price).all()
-        )
-        average_price = sum([price[0] for price in average_price]) / len(average_price)
-        cons.print(f"Average price: {average_price}")
+        total_houses = len(listings)    #total number of houses scraped
 
         results = (
             session.query(ZillowListing.city, ZillowListing.state, ZillowListing.price)
@@ -59,23 +64,21 @@ def main():
         plt.bar(cities, prices, width=1)
         plt.show()
 
-        # renderables = [
-        #     Panel(
-        #         f"[bold italic]{book.book_name}[/bold italic]\n[green]{book.product_price}[/green]",
-        #         border_style="yellow",
-        #     )
-        #     for book in books
-        # ]
-        # live.update(Panel(Columns(renderables, equal=True), title="Books"))
+        renderables = [
+            Panel(
+                f"[bold]{listing.address}[/bold]\n\nPrice: [green]${listing.price:0.2f}[/green]"
+                f"\nSqft: {listing.sqft}\nBedrooms: {listing.bedrooms}\nBathrooms: {listing.bathrooms}",
+                border_style="yellow",
+            )
+            for listing in listings            
+        ]
+        live.update(Panel.fit(Columns(renderables, equal=True), title = "Houses Located"))
+
+        cons.print(f"\nTotal crawl time: {time.strftime('%H:%M:%S', time.gmtime(total_crawl_time))}")        
+        cons.print(f"Total houses escraped: {total_houses}")
+        cons.print(f"Total pages scraped: {total_pages}")
+        
         session.close()
-
-        # table = Table(title="Books")
-        # table.add_column("Book Name")
-        # table.add_column("Product Price")
-        # for book in books:
-        #     table.add_row(book.book_name, book.product_price)
-
-        # live.update(Panel.fit(table, title="Books"))
 
 
 if __name__ == "__main__":
