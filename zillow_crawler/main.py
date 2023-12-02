@@ -16,6 +16,7 @@ from zillow_crawler.models import ZillowListing, ZillowPage, engine
 from zillow_crawler.spiders.zillow_houses import ZillowHousesSpider
 
 import plotext as plt
+import time
 
 collected_stats = None
 
@@ -26,8 +27,11 @@ def main():
         settings=get_project_settings(),
     )
     clawler = process.create_crawler(ZillowHousesSpider)
+    start_timer = time.time()   #used to time crawling time
+    total_houses = 0            #total houses scrapeds
     process.crawl(clawler)
     process.start()
+    total_crawl_time = time.time() - start_timer
 
     stats = clawler.stats.get_stats()
     console.print(stats)
@@ -40,6 +44,7 @@ def main():
 
         for listing in listings:
             cons.print(listing.address)
+            total_houses += 1
 
         average_price = (
             session.query(ZillowListing).with_entities(ZillowListing.price).all()
@@ -59,6 +64,16 @@ def main():
         plt.bar(cities, prices, width=1)
         plt.show()
 
+        renderables = [
+            Panel(
+                f"[bold]{listing.address}[/bold]\n\nPrice: [green]${listing.price:0.2f}[/green]"
+                f"\nSqft: {listing.sqft}\nBedrooms: {listing.bedrooms}\nBathrooms: {listing.bathrooms}",
+                border_style="yellow",
+            )
+            for listing in listings            
+        ]
+        live.update(Panel.fit(Columns(renderables, equal=True), title = "Houses Located"))
+
         # renderables = [
         #     Panel(
         #         f"[bold italic]{book.book_name}[/bold italic]\n[green]{book.product_price}[/green]",
@@ -68,7 +83,8 @@ def main():
         # ]
         # live.update(Panel(Columns(renderables, equal=True), title="Books"))
         session.close()
-
+        print("\nTotal crawl time: "+str(f'{total_crawl_time:0.2f} sec'))
+        print("Total houses scraped: "+str(total_houses))
         # table = Table(title="Books")
         # table.add_column("Book Name")
         # table.add_column("Product Price")
