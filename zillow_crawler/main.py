@@ -28,7 +28,9 @@ def main():
     )
     clawler = process.create_crawler(ZillowHousesSpider)
     start_timer = time.time()   #used to time crawling time
-    total_houses = 0            #total houses scrapeds
+    total_houses = 0            #total houses scraped
+    total_pages = 0             #total pages scraped
+
     process.crawl(clawler)
     process.start()
     total_crawl_time = time.time() - start_timer
@@ -44,13 +46,11 @@ def main():
 
         for listing in listings:
             cons.print(listing.address)
-            total_houses += 1
+        
+        
+        total_pages = len(pages)
 
-        average_price = (
-            session.query(ZillowListing).with_entities(ZillowListing.price).all()
-        )
-        average_price = sum([price[0] for price in average_price]) / len(average_price)
-        cons.print(f"Average price: {average_price}")
+        total_houses = len(listings)    #total number of houses scraped
 
         results = (
             session.query(ZillowListing.city, ZillowListing.state, ZillowListing.price)
@@ -61,8 +61,8 @@ def main():
         cities = [city for city, *_ in results]
         prices = [price for *_, price in results]
 
-        plt.bar(cities, prices, width=1)
-        plt.show()
+        # plt.bar(cities, prices, width=1)
+        # plt.show()
 
         renderables = [
             Panel(
@@ -74,24 +74,11 @@ def main():
         ]
         live.update(Panel.fit(Columns(renderables, equal=True), title = "Houses Located"))
 
-        # renderables = [
-        #     Panel(
-        #         f"[bold italic]{book.book_name}[/bold italic]\n[green]{book.product_price}[/green]",
-        #         border_style="yellow",
-        #     )
-        #     for book in books
-        # ]
-        # live.update(Panel(Columns(renderables, equal=True), title="Books"))
+        # cons.print(f"\nTotal crawl time: {total_crawl_time:0.2f}")
+        # cons.print(f"Total houses escraped: {total_houses}")
+        # cons.print(f"Total pages scraped: {total_pages}")
+        
         session.close()
-        print("\nTotal crawl time: "+str(f'{total_crawl_time:0.2f} sec'))
-        print("Total houses scraped: "+str(total_houses))
-        # table = Table(title="Books")
-        # table.add_column("Book Name")
-        # table.add_column("Product Price")
-        # for book in books:
-        #     table.add_row(book.book_name, book.product_price)
-
-        # live.update(Panel.fit(table, title="Books"))
 
 
 if __name__ == "__main__":
