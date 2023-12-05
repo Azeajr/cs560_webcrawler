@@ -5,26 +5,54 @@ import scrapy
 import structlog
 from scrapy.http import Response
 from scrapy.loader import ItemLoader
-from sqlalchemy.orm import sessionmaker
 
 from zillow_crawler.items import HouseItem
-from zillow_crawler.models import ZillowPage, engine
 
 log = structlog.get_logger()
 
 
 class ZillowHousesSpider(scrapy.Spider):
-    """Spider that crawls zillow's houses for sale page."""
+    """
+    Spider that crawls Zillow's houses for sale page.
+
+    Attributes:
+        name (str): The name of the spider.
+        allowed_domains (list): List of allowed domains for crawling.
+        starting_url (str): The starting URL for crawling.
+        start_urls (list): List of starting URLs for crawling.
+        duplicate_page_count (int): Counter for duplicate pages encountered.
+        duplicate_page_count_limit (int): Limit for duplicate page count.
+
+    Methods:
+        __init__: Initialize the spider.
+        from_crawler: Initialize the spider from the crawler.
+        spider_closed: Log the stats when the spider is closed.
+        get_stats: Get the stats of the spider.
+        parse: Parse the response and extract data.
+    """
 
     name = "zillow_houses"
     allowed_domains = ["zillow.com"]
-    # According to zillow's robots.txt, this path was not disallowed
+    # According to Zillow's robots.txt, this path was not disallowed
     starting_url = "https://www.zillow.com/homes/for_sale/"
     start_urls = [starting_url]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.duplicate_page_count = 0
+        self.duplicate_page_count_limit = 10
+
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
-        """Initialize the crawler."""
+        """
+        Initialize the spider from the crawler.
+
+        Args:
+            crawler (scrapy.crawler.Crawler): The crawler object.
+
+        Returns:
+            ZillowHousesSpider: The initialized spider.
+        """
         spider = super(ZillowHousesSpider, cls).from_crawler(crawler, *args, **kwargs)
         crawler.signals.connect(
             spider.spider_closed, signal=scrapy.signals.spider_closed
@@ -32,10 +60,33 @@ class ZillowHousesSpider(scrapy.Spider):
         return spider
 
     def spider_closed(self, spider):
-        """Log the stats when the spider is closed."""
+        """
+        Log the stats when the spider is closed.
+
+        Args:
+            spider (ZillowHousesSpider): The spider object.
+        """
         log.info("Spider closed", stats=spider.crawler.stats.get_stats())
 
+    def get_stats(self):
+        """
+        Get the stats of the spider.
+
+        Returns:
+            dict: The statistics of the spider.
+        """
+        return self.crawler.stats.get_stats()
+
     def parse(self, response: Response, **kwargs):
+        """
+        Parse the response and extract data.
+
+        Args:
+            response (scrapy.http.Response): The response object.
+
+        Yields:
+            dict: The extracted data from the response.
+        """
         item_loader = ItemLoader(item=HouseItem(), response=response)
         item_loader.add_css("address", "article address::text")
         item_loader.add_css(
@@ -94,15 +145,5 @@ class ZillowHousesSpider(scrapy.Spider):
 
         pages = response.css("div.search-pagination ul li a::attr(href)").getall()
         if pages:
-            session = sessionmaker(bind=engine)()
-
             for page in pages:
-                full_url = response.urljoin(page)
-                log.info("Full URL", full_url=full_url)
-                page_exists = (
-                    session.query(ZillowPage)
-                    .filter_by(url=response.urljoin(page))
-                    .first()
-                )
-                if not page_exists:
-                    yield response.follow(page, callback=self.parse)
+                yield response.follow(page, callback=self.parse)

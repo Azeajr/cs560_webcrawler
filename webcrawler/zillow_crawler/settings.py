@@ -108,7 +108,7 @@ LOG_ENABLED = False
 # Set the maximum number of pages to crawl
 # This is more of an exponential limit than a hard limit
 
-CLOSESPIDER_PAGECOUNT = 1 # 2
+CLOSESPIDER_PAGECOUNT = 1  # 2
 # CLOSESPIDER_PAGECOUNT = 3 # 8
 # CLOSESPIDER_PAGECOUNT = 4  # 16
 # CLOSESPIDER_PAGECOUNT = 5  # 32

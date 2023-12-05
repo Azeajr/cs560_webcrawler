@@ -13,6 +13,8 @@ sqlalchemy = "^2.0.23"
 structlog = "^23.2.0"
 pydantic = "^2.5.2"
 plotext = "^5.2.8"
+matplotlib = "^3.8.2"
+pytest-asyncio = "^0.23.2"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.9.1"
