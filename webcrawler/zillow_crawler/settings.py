@@ -1,3 +1,43 @@
+"""
+This module contains the Scrapy settings for the Zillow crawler.
+
+Attributes:
+
+    BOT_NAME (str): The name of the bot.
+    SPIDER_MODULES (list[str]): The list of modules where the spiders are
+        located.
+    NEWSPIDER_MODULE (str): The name of the module where the new spiders are
+        located.
+    USER_AGENT (str): The user agent to use for the bot.
+    ROBOTSTXT_OBEY (bool): Whether to obey the robots.txt file.
+    CONCURRENT_REQUEST (int): The maximum number of concurrent requests to
+        perform.
+    DOWNLOAD_DELAY (int): The amount of time in seconds to wait before
+        performing a request.
+    CONCURRENT_REQUESTS_PER_DOMAIN (int): The maximum number of concurrent
+        requests to perform for a single domain.
+    DEFAULT_REQUEST_HEADERS (dict[str, str]): The default request headers.
+        Control the encoding of the request.
+    ITEM_PIPELINES (dict[str, int]): The item pipelines to use.
+    AUTOTHROTTLE_ENABLED (bool): Whether to enable the AutoThrottle extension.
+    AUTOTHROTTLE_START_DELAY (int): The initial download delay to use for
+        AutoThrottle.
+    AUTOTHROTTLE_MAX_DELAY (int): The maximum download delay to use for
+        AutoThrottle.
+    AUTOTHROTTLE_TARGET_CONCURRENCY (float): The average number of requests
+        Scrapy should be sending in parallel to each remote server.
+    AUTOTHROTTLE_DEBUG (bool): Whether to enable showing throttling stats for
+        every response received.
+    CLOSESPIDER_PAGECOUNT (int): The maximum number of pages to crawl.
+    REQUEST_FINGERPRINTER_IMPLEMENTATION (str): The request fingerprinter
+        implementation to use.  This controls the algorithm used to generate
+        the request fingerprint.
+    TWISTED_REACTOR (str): The Twisted reactor to use. This controls the
+        networking engine to use for HTTP requests.
+    FEED_EXPORT_ENCODING (str): The encoding to use for exporting the feed.
+    LOG_ENABLED (bool): Whether to enable scrapy's default logging.
+    CLOSESPIDER_PAGECOUNT (int): The maximum number of pages to crawl.
+"""
 # Scrapy settings for zillow_crawler project
 #
 # For simplicity, this file contains only settings considered important or

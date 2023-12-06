@@ -4,6 +4,7 @@ from pydantic import BaseModel, validator
 
 
 class ZillowListingModel(BaseModel):
+    """Pydantic model for Zillow Listing"""
     address: str
     price: float
     sqft: int
@@ -18,6 +19,10 @@ class ZillowListingModel(BaseModel):
     def __init__(__pydantic_self__, **data):
         super().__init__(**data)
         # Parse address and update the model fields
+        # All this was done because the address field was a string
+        # with the following format:
+        # "street, city, state_zip"
+        # This parses the string and updates the model fields
         street, city, state_zip = __pydantic_self__.address.split(",")
         __pydantic_self__.street = street.strip()
         __pydantic_self__.city = city.strip()

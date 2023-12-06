@@ -6,7 +6,7 @@ import structlog
 from scrapy.http import Response
 from scrapy.loader import ItemLoader
 
-from zillow_crawler.items import HouseItem
+from webcrawler.zillow_crawler.items import HouseItem
 
 log = structlog.get_logger()
 
@@ -38,14 +38,27 @@ class ZillowHousesSpider(scrapy.Spider):
     start_urls = [starting_url]
 
     def __init__(self, *args, **kwargs):
+        """
+        Initialize the spider.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+        """
+
+        # Call the parent constructor
         super().__init__(*args, **kwargs)
+        # This is a counter for duplicate pages encountered
         self.duplicate_page_count = 0
+        # This is the limit for duplicate page count
         self.duplicate_page_count_limit = 10
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
         """
-        Initialize the spider from the crawler.
+        Initialize the spider from the crawler. Override this method to
+        instantiate the spider with custom arguments.  Specifically, to add a
+        signal that will be used to log the stats when the spider is closed.
 
         Args:
             crawler (scrapy.crawler.Crawler): The crawler object.
@@ -87,7 +100,9 @@ class ZillowHousesSpider(scrapy.Spider):
         Yields:
             dict: The extracted data from the response.
         """
+        # Use an ItemLoader to extract data from the response
         item_loader = ItemLoader(item=HouseItem(), response=response)
+        # Add CSS selectors to extract data from the response
         item_loader.add_css("address", "article address::text")
         item_loader.add_css(
             "price", "article span[data-test='property-card-price']::text"
@@ -95,6 +110,7 @@ class ZillowHousesSpider(scrapy.Spider):
         item_loader.add_css("sqft", "article ul li:nth-of-type(3) b::text")
         item_loader.add_css("bedrooms", "article ul li:nth-of-type(1) b::text")
         item_loader.add_css("bathrooms", "article ul li:nth-of-type(2) b::text")
+        # Load the item
         scraped_data = item_loader.load_item()
         for address, price, sqft, bedrooms, bathrooms in zip(
             scraped_data["address"],
@@ -103,6 +119,8 @@ class ZillowHousesSpider(scrapy.Spider):
             scraped_data["bedrooms"],
             scraped_data["bathrooms"],
         ):
+            # Calculate a hash for the house. This will be used to determine if
+            # the house has already been scraped.
             # Perhaps sha256 is faster than md5 on newer machines
             house_hash = hashlib.md5(
                 f"{address}{price}{sqft}{bedrooms}{bathrooms}".encode()
@@ -128,6 +146,8 @@ class ZillowHousesSpider(scrapy.Spider):
                 "house_hash": house_hash,
             }
 
+        # Calculate a hash for the current page. This will be used to determine
+        # if the page has already been scraped.
         current_page = response.url
         current_page_hash = hashlib.md5(response.body).hexdigest()
         log.info(
@@ -143,7 +163,9 @@ class ZillowHousesSpider(scrapy.Spider):
             "page_hash": current_page_hash,
         }
 
+        # Get a list of links to other pages
         pages = response.css("div.search-pagination ul li a::attr(href)").getall()
         if pages:
             for page in pages:
+                # Send the crawler to each page
                 yield response.follow(page, callback=self.parse)

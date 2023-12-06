@@ -1,14 +1,16 @@
-# Define here the models for your scraped items
-#
-# See documentation in:
-# https://docs.scrapy.org/en/latest/topics/items.html
-
+"""
+This module contains the scrapy items for the zillow_crawler.  These items
+are used to store data from the response in a standardized format.  This
+allows for easier processing and storage of the data.
+"""
 import scrapy
 
 
 class HouseItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
+    """
+    Item for storing house data.
+    """
+
     address = scrapy.Field()
     price = scrapy.Field()
     sqft = scrapy.Field()
@@ -18,6 +20,10 @@ class HouseItem(scrapy.Item):
 
 
 class PageItem(scrapy.Item):
+    """
+    Item for storing page data.
+    """
+
     page_url = scrapy.Field()
     page_title = scrapy.Field()
     page_content = scrapy.Field()
