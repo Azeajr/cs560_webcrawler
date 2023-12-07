@@ -192,11 +192,11 @@ def main():
 
         # wait for the crawler process to finish
         crawler_process.join()
-        # close the SQLAlchemy session
-        session.close()
-
-        # Use the final listings and pages lists to show the total number of
+        # Get the final listings and pages lists to show the total number of
         # listings and pages scraped.
+        listings = session.query(ZillowListing).all()
+        pages = session.query(ZillowPage).all()
+
         console.print(f"Total houses scraped: {len(listings)}")
         console.print(f"Total pages scraped: {len(pages)}")
 
@@ -213,6 +213,9 @@ def main():
 
         # print the finish reason
         console.print(f"Finish reason: {crawler_stats['finish_reason']}")
+
+        # close the SQLAlchemy session
+        session.close()
 
 
 if __name__ == "__main__":

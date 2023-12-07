@@ -55,9 +55,12 @@ NEWSPIDER_MODULE = "zillow_crawler.spiders"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = "zillow_crawler (+http://www.yourdomain.com)"
+# First user agent
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36"
-
-
+# User agent for Linux
+# USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
+# USER_AGENT = None
+# USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 Edg/119.0.0.0"
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
 
@@ -68,7 +71,7 @@ CONCURRENT_REQUEST = 1
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 3
+DOWNLOAD_DELAY = 30
 # The download delay setting will honor only one of:
 CONCURRENT_REQUESTS_PER_DOMAIN = 1
 # CONCURRENT_REQUESTS_PER_IP = 16
@@ -152,3 +155,11 @@ CLOSESPIDER_PAGECOUNT = 1  # 2
 # CLOSESPIDER_PAGECOUNT = 3 # 8
 # CLOSESPIDER_PAGECOUNT = 4  # 16
 # CLOSESPIDER_PAGECOUNT = 5  # 32
+# CLOSESPIDER_PAGECOUNT = 100
+
+
+# DOWNLOAD_HANDLERS = {
+#     "http": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
+#     "https": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
+# }
+

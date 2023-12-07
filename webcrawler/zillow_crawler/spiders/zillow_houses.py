@@ -1,9 +1,10 @@
 """This module contains the spider that crawls zillow's houses for sale page."""
 import hashlib
+from typing import Iterable
 
 import scrapy
 import structlog
-from scrapy.http import Response
+from scrapy.http import Request, Response
 from scrapy.loader import ItemLoader
 
 from webcrawler.zillow_crawler.items import HouseItem
@@ -53,6 +54,9 @@ class ZillowHousesSpider(scrapy.Spider):
         # This is the limit for duplicate page count
         self.duplicate_page_count_limit = 10
 
+    # def start_requests(self) -> Iterable[Request]:
+    #     yield scrapy.Request(url=self.starting_url, meta={"playwright": True})
+
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
         """
@@ -100,72 +104,77 @@ class ZillowHousesSpider(scrapy.Spider):
         Yields:
             dict: The extracted data from the response.
         """
+        log.info("Parsing response", url=response.url)
+        # log.info("Response body", body=response.body)
+        with open("response.html", "w") as f:
+            f.write(response.body.decode())
+
         # Use an ItemLoader to extract data from the response
-        item_loader = ItemLoader(item=HouseItem(), response=response)
-        # Add CSS selectors to extract data from the response
-        item_loader.add_css("address", "article address::text")
-        item_loader.add_css(
-            "price", "article span[data-test='property-card-price']::text"
-        )
-        item_loader.add_css("sqft", "article ul li:nth-of-type(3) b::text")
-        item_loader.add_css("bedrooms", "article ul li:nth-of-type(1) b::text")
-        item_loader.add_css("bathrooms", "article ul li:nth-of-type(2) b::text")
-        # Load the item
-        scraped_data = item_loader.load_item()
-        for address, price, sqft, bedrooms, bathrooms in zip(
-            scraped_data["address"],
-            scraped_data["price"],
-            scraped_data["sqft"],
-            scraped_data["bedrooms"],
-            scraped_data["bathrooms"],
-        ):
-            # Calculate a hash for the house. This will be used to determine if
-            # the house has already been scraped.
-            # Perhaps sha256 is faster than md5 on newer machines
-            house_hash = hashlib.md5(
-                f"{address}{price}{sqft}{bedrooms}{bathrooms}".encode()
-            ).hexdigest()
+        # item_loader = ItemLoader(item=HouseItem(), response=response)
+        # # Add CSS selectors to extract data from the response
+        # item_loader.add_css("address", "article address::text")
+        # item_loader.add_css(
+        #     "price", "article span[data-test='property-card-price']::text"
+        # )
+        # item_loader.add_css("sqft", "article ul li:nth-of-type(3) b::text")
+        # item_loader.add_css("bedrooms", "article ul li:nth-of-type(1) b::text")
+        # item_loader.add_css("bathrooms", "article ul li:nth-of-type(2) b::text")
+        # # Load the item
+        # scraped_data = item_loader.load_item()
+        # for address, price, sqft, bedrooms, bathrooms in zip(
+        #     scraped_data["address"],
+        #     scraped_data["price"],
+        #     scraped_data["sqft"],
+        #     scraped_data["bedrooms"],
+        #     scraped_data["bathrooms"],
+        # ):
+        #     # Calculate a hash for the house. This will be used to determine if
+        #     # the house has already been scraped.
+        #     # Perhaps sha256 is faster than md5 on newer machines
+        #     house_hash = hashlib.md5(
+        #         f"{address}{price}{sqft}{bedrooms}{bathrooms}".encode()
+        #     ).hexdigest()
 
-            log.info(
-                "House found",
-                address=address,
-                price=price,
-                sqft=sqft,
-                bedrooms=bedrooms,
-                bathrooms=bathrooms,
-                house_hash=house_hash,
-            )
+        #     log.info(
+        #         "House found",
+        #         address=address,
+        #         price=price,
+        #         sqft=sqft,
+        #         bedrooms=bedrooms,
+        #         bathrooms=bathrooms,
+        #         house_hash=house_hash,
+        #     )
 
-            yield {
-                "type": "house",
-                "address": address,
-                "price": price,
-                "sqft": sqft,
-                "bedrooms": bedrooms,
-                "bathrooms": bathrooms,
-                "house_hash": house_hash,
-            }
+        #     yield {
+        #         "type": "house",
+        #         "address": address,
+        #         "price": price,
+        #         "sqft": sqft,
+        #         "bedrooms": bedrooms,
+        #         "bathrooms": bathrooms,
+        #         "house_hash": house_hash,
+        #     }
 
-        # Calculate a hash for the current page. This will be used to determine
-        # if the page has already been scraped.
-        current_page = response.url
-        current_page_hash = hashlib.md5(response.body).hexdigest()
-        log.info(
-            "Current Page",
-            current_page=current_page,
-            current_page_hash=current_page_hash,
-        )
+        # # Calculate a hash for the current page. This will be used to determine
+        # # if the page has already been scraped.
+        # current_page = response.url
+        # current_page_hash = hashlib.md5(response.body).hexdigest()
+        # log.info(
+        #     "Current Page",
+        #     current_page=current_page,
+        #     current_page_hash=current_page_hash,
+        # )
 
-        yield {
-            "type": "page",
-            "url": current_page,
-            "crawled": True,
-            "page_hash": current_page_hash,
-        }
+        # yield {
+        #     "type": "page",
+        #     "url": current_page,
+        #     "crawled": True,
+        #     "page_hash": current_page_hash,
+        # }
 
-        # Get a list of links to other pages
-        pages = response.css("div.search-pagination ul li a::attr(href)").getall()
-        if pages:
-            for page in pages:
-                # Send the crawler to each page
-                yield response.follow(page, callback=self.parse)
+        # # Get a list of links to other pages
+        # pages = response.css("div.search-pagination ul li a::attr(href)").getall()
+        # if pages:
+        #     for page in pages:
+        #         # Send the crawler to each page
+        #         yield response.follow(page, callback=self.parse)
