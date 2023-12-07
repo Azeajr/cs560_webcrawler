@@ -53,6 +53,10 @@ def main():
     # create a console object to render the UI
     console = Console()
 
+    # Pagination settings
+    listings_per_page = 10
+    current_page = 0
+
     # create a multiprocessing manager to share objects between processes
     with Manager() as manager:
         # boolean value to indicate if the crawler has completed
@@ -86,8 +90,21 @@ def main():
         with Live(console=console, refresh_per_second=1) as live:
             # loop until the crawler has completed
             while not crawler_completed.value:
+                offset = current_page * listings_per_page
+                listings = (
+                    session.query(ZillowListing)
+                    .limit(listings_per_page)
+                    .offset(offset)
+                    .all()
+                )
+
+                # if user_wants_next_page:
+                #     current_page += 1
+                # elif user_wants_previous_page and current_page > 0:
+                #     current_page -= 1
+
                 # query the database for the listings and pages
-                listings = session.query(ZillowListing).all()
+                # listings = session.query(ZillowListing).all()
                 pages = session.query(ZillowPage).all()
 
                 # create a progress bar to show the average house prices
@@ -127,6 +144,16 @@ def main():
                         f"[green]{city}", completed=price, total=max_price
                     )
 
+                # Navigation header
+                navigation_header = f"Page {current_page + 1} - [bold green]Previous[/] | [bold green]Next[/]"
+
+                # Render the navigation header
+                navigation_panel = Panel(
+                    navigation_header,
+                    style="bold yellow",
+                    border_style="blue",
+                )
+
                 # renderables contain the listings to show in the left panel
                 renderables = [
                     Panel(
@@ -140,9 +167,12 @@ def main():
                     for listing in listings
                 ]
 
+                # Combine navigation and listings into a single renderable
+                combined_renderables = [navigation_panel] + renderables
+
                 # add the renderables to the left panel
                 left_panel = Panel(
-                    Columns(renderables, equal=True, expand=True),
+                    Columns(combined_renderables, equal=True, expand=True),
                     title="Houses Located",
                     border_style="green",
                 )

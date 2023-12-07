@@ -36,12 +36,12 @@
 5. Run the program
    - Current Method (Uses rich to display results)
    ```bash
-   cd zillow_crawler
+   cd webcrawler
    python main.py
    ```
    - Legacy Method (Uses scrapy to crawl but logging is not formatted)
    ```bash
-   scrapy runspider zillow_crawler/spiders/books_toscrape.py
+   scrapy runspider webrawler/spiders/zillow_houses.py
    ```
 
 6. View the sqlite database
@@ -62,7 +62,8 @@
    ```
    To view the contents of a table:
    ```sql
-   sqlite> select * from books;
+   sqlite> select * from zillow_listings;
+   sqlite> select * from zillow_pages;
    ```
 
 ## Project Initialized with
