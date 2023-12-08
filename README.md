@@ -82,3 +82,10 @@ cd cs560_webcrawler
 chmod +x setup.sh
 ./setup.sh
 ```
+
+## Team Members:
+- [Rafael DeJesus Brown](https://github.com/RBrownfr)
+- [Sakusal Khatiwada](https://github.com/sakusal)
+- [Mariana S. Ormaechea-Lugones](https://github.com/OLmariana)
+- [Kastriot Rexhaj](https://github.com/kastriot3)
+- [Antonio Zea Jr.](https://github.com/Azeajr)
